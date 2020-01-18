@@ -23,7 +23,7 @@ const createHardresetHandler = (eXecutable, hardResetMethod, argv) =>
     // Detaching child is useful when in Windows to let child
     // live after the parent is killed
     const args = (argv || []).concat([appPath])
-    const child = spawn(eXecutable, args, {
+    const child = spawn('cd ../ && ember electron, args, {
       detached: true,
       stdio: 'inherit'
     })
@@ -43,6 +43,8 @@ const createHardresetHandler = (eXecutable, hardResetMethod, argv) =>
 module.exports = (glob, options = {}) => {
   // Preparing hard reset if electron executable is given in options
   // A hard reset is only done when the main file has changed
+  const eXecutable = options.electron
+  const hardResetHandler = createHardresetHandler(eXecutable, options.hardResetMethod, options.argv)
   if (eXecutable && fs.existsSync(eXecutable)) {
     const hardWatcher = chokidar.watch(mainFile, Object.assign({ ignored: [ignoredPaths] }, options))
     hardWatcher.once('change', hardResetHandler)
